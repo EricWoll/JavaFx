@@ -1,4 +1,4 @@
-package com.javafx.javafx.Menu;
+package com.javafx.javafx.lib.Menu;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -15,11 +15,11 @@ public class MenuHandler {
 
     private final Set<KeyCode> requiredKeys;
     private final ContextMenu contextMenu;
-    private final Set<KeyCode> pressedKeys = new HashSet<>();
     private final Node targetNode;
     private boolean isMouseOver = false;
     private double lastMouseX;
     private double lastMouseY;
+    private final Set<KeyCode> pressedKeys = new HashSet<>();
     private boolean useRightClick;
     private boolean useKeys;
 
@@ -30,21 +30,19 @@ public class MenuHandler {
         this.useRightClick = builder.useRightClick;
         this.useKeys = builder.useKeys;
         setupListeners();
-        handleFilters();
     }
 
     private void setupListeners() {
         // Key events
-        targetNode.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPressed);
-        targetNode.addEventFilter(KeyEvent.KEY_RELEASED, this::handleKeyReleased);
+        if (useKeys) {
+            targetNode.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPressed);
+            targetNode.addEventFilter(KeyEvent.KEY_RELEASED, this::handleKeyReleased);
+        }
 
         // Mouse enter/exit to track mouse presence
         targetNode.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> isMouseOver = true);
         targetNode.addEventFilter(MouseEvent.MOUSE_EXITED, e -> isMouseOver = false);
-    }
 
-    private void handleFilters() {
-        // Track last mouse position relative to target node
         targetNode.addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
             lastMouseX = e.getX();
             lastMouseY = e.getY();
@@ -64,8 +62,6 @@ public class MenuHandler {
     }
 
     private void handleKeyPressed(KeyEvent event) {
-        if (!useKeys) return;
-
         pressedKeys.add(event.getCode());
 
         if (isMouseOver && !requiredKeys.isEmpty() && pressedKeys.containsAll(requiredKeys)) {
@@ -79,7 +75,6 @@ public class MenuHandler {
     }
 
     private void handleKeyReleased(KeyEvent event) {
-        if (!useKeys) return;
         pressedKeys.remove(event.getCode());
     }
 
@@ -93,15 +88,19 @@ public class MenuHandler {
 
     public static class Builder {
         private final Node targetNode;
-        private final Set<KeyCode> requiredKeys;
         private final ContextMenu contextMenu;
+        private Set<KeyCode> requiredKeys;
         private boolean useRightClick = false; // default
         private boolean useKeys = true;       // default
 
-        public Builder(Node targetNode, Set<KeyCode> requiredKeys, ContextMenu contextMenu) {
+        public Builder(Node targetNode, ContextMenu contextMenu) {
             this.targetNode = targetNode;
-            this.requiredKeys = requiredKeys;
             this.contextMenu = contextMenu;
+        }
+
+        public Builder setPressedKeys(Set<KeyCode> requiredKeys) {
+            this.requiredKeys = requiredKeys;
+            return this;
         }
 
         public Builder useRightClick(boolean useRightClick) {

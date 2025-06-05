@@ -1,6 +1,7 @@
-package com.javafx.javafx.Nodes.Connectors;
+package com.javafx.javafx.lib.Connectors;
 
-import com.javafx.javafx.Nodes.Node;
+
+import com.javafx.javafx.lib.GraphNode.GraphNode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -9,13 +10,13 @@ public class ConnectorPoint extends Rectangle {
 
     public enum Type { INPUT, OUTPUT }
 
-    private final Node parentNode;
+    private final GraphNode parentGraphNode;
     private final ConnectionManager manager;
     private final Type type;
 
-    public ConnectorPoint(Node parentNode, ConnectionManager manager, Type type) {
+    public ConnectorPoint(GraphNode parentGraphNode, ConnectionManager manager, Type type) {
         super(10, 20);
-        this.parentNode = parentNode;
+        this.parentGraphNode = parentGraphNode;
         this.manager = manager;
         this.type = type;
 
@@ -37,8 +38,8 @@ public class ConnectorPoint extends Rectangle {
         e.consume();
     }
 
-    public Node getParentNode() {
-        return parentNode;
+    public GraphNode getParentNode() {
+        return parentGraphNode;
     }
 
     public Type getType() {
