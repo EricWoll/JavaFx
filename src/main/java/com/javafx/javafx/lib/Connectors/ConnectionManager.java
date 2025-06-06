@@ -27,7 +27,7 @@ public class ConnectionManager {
     public ConnectionManager(AnchorPane canvas) {
         this.canvas = canvas;
 
-        canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, this::handleMousePressed);
+        canvas.setOnMousePressed(this::handleMousePressed);
         canvas.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::handleMouseDragged);
         canvas.addEventFilter(MouseEvent.MOUSE_RELEASED, this::handleMouseReleased);
     }

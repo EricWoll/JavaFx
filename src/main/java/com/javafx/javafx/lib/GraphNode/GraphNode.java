@@ -28,7 +28,6 @@ public class GraphNode extends StackPane {
     private final ConnectorPoint inputConnector;
     private final ConnectorPoint outputConnector;
     private ContextMenu contextMenu;
-    private double lastMouseX, lastMouseY;
     private double startMouseX, startMouseY;
     private final Map<GraphNode, Point2D> graphNodePositions = new HashMap<>();
     private final GraphNodeSelectionManager selectionManager = GraphNodeSelectionManager.getInstance();
@@ -96,6 +95,7 @@ public class GraphNode extends StackPane {
         if (!(e.getTarget() instanceof ConnectorPoint)) {
             switch (e.getButton()) {
                 case PRIMARY -> {
+                    contextMenu.hide();
                     canvas.setCursor(Cursor.CLOSED_HAND);
                     if (!selectionManager.getSelectedNodes().contains(this)) {
                         selectionManager.clear();
@@ -147,17 +147,6 @@ public class GraphNode extends StackPane {
     }
 
     public static void clearSelection() {
-        GraphNodeSelectionManager.getInstance().clear();
-    }
-
-    public static void deleteSelectedNodes() {
-        var selectedNodes = GraphNodeSelectionManager.getInstance().getSelectedNodes();
-
-        for (GraphNode node : selectedNodes) {
-            node.connectionManager.removeConnectionsForNode(node);
-            node.wrapperPane.getChildren().remove(node);
-        }
-
         GraphNodeSelectionManager.getInstance().clear();
     }
 
